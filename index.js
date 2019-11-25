@@ -3,6 +3,7 @@ const express = require("express");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const { customFetch } = require("./utils");
 
 const app = express();
 app.server = http.createServer(app);
@@ -60,7 +61,24 @@ app.use((req, res, next) => {
 
 app.disable("x-powered-by");
 
-app.route("/ping").post((req, res) => {
+app.route("/ping").get(async (req, res) => {
+  try {
+    const result = await customFetch(
+      {
+        channel: "CR0MR10J2",
+        text: "Hello, world"
+      },
+      "chat.postMessage"
+    );
+
+    return res.status(200).send(result);
+  } catch (error) {
+    console.log(error);
+  }
+  res.status(200).send("Pong");
+});
+app.route("/userStatus").post((req, res) => {
+  console.log(req.body);
   res.status(200).send("Pong");
 });
 
