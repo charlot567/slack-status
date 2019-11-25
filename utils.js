@@ -22,8 +22,7 @@ const callApi = (body, url, method) => {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization:
-        "Bearer xoxp-275953048624-438404608454-848092166532-2ea297f3f6a59700c02f67eb0b54d6c9"
+      Authorization: "Bearer " + process.env.SLACK_TOKEN
     },
     body: method === "POST" ? JSON.stringify(body) : undefined
   });
