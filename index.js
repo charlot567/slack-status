@@ -3,7 +3,9 @@ const express = require("express");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const fs = require("fs");
 const { customFetch } = require("./utils");
+var CronJob = require("cron").CronJob;
 
 const app = express();
 app.server = http.createServer(app);
@@ -61,12 +63,144 @@ app.use((req, res, next) => {
 
 app.disable("x-powered-by");
 
+new CronJob(
+  "0 */20 * * * *",
+  async function() {
+    try {
+      if (!(new Date().getHours() >= 8 && new Date().getHours() <= 18)) {
+        return;
+      }
+
+      const result = await customFetch(
+        {
+          channel: "DCW2Y6J7R", // User ID
+          blocks: [
+            {
+              type: "section",
+              text: {
+                type: "mrkdwn",
+                text: "Que fais tu?"
+              }
+            },
+            {
+              type: "actions",
+              block_id: "actionblock789",
+              elements: [
+                {
+                  type: "button",
+                  text: {
+                    type: "plain_text",
+                    text: "Je suis/vais au gym!"
+                  },
+                  value: "gym"
+                },
+                {
+                  type: "button",
+                  text: {
+                    type: "plain_text",
+                    text: "Je code"
+                  },
+                  value: "coding"
+                },
+                {
+                  type: "button",
+                  text: {
+                    type: "plain_text",
+                    text: "Je suis en meeting"
+                  },
+                  value: "meeting"
+                },
+                {
+                  type: "button",
+                  text: {
+                    type: "plain_text",
+                    text: "Je suis en pause"
+                  },
+                  value: "pause"
+                },
+                {
+                  type: "button",
+                  text: {
+                    type: "plain_text",
+                    text: "Je fais autre choses"
+                  },
+                  value: "other"
+                }
+              ]
+            }
+          ]
+        },
+        "chat.postMessage"
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  null,
+  true,
+  "America/Toronto"
+);
+
 app.route("/ping").get(async (req, res) => {
   try {
     const result = await customFetch(
       {
-        channel: "CR0MR10J2",
-        text: "Hello, world"
+        channel: "DCW2Y6J7R", // User ID
+        blocks: [
+          {
+            type: "section",
+            text: {
+              type: "mrkdwn",
+              text: "Que fais tu?"
+            }
+          },
+          {
+            type: "actions",
+            block_id: "actionblock789",
+            elements: [
+              {
+                type: "button",
+                text: {
+                  type: "plain_text",
+                  text: "Je suis/vais au gym!"
+                },
+                value: "gym"
+              },
+              {
+                type: "button",
+                text: {
+                  type: "plain_text",
+                  text: "Je code"
+                },
+                value: "coding"
+              },
+              {
+                type: "button",
+                text: {
+                  type: "plain_text",
+                  text: "Je suis en meeting"
+                },
+                value: "meeting"
+              },
+              {
+                type: "button",
+                text: {
+                  type: "plain_text",
+                  text: "Je suis en pause"
+                },
+                value: "pause"
+              },
+              {
+                type: "button",
+                text: {
+                  type: "plain_text",
+                  text: "Je fais autre choses"
+                },
+                value: "other"
+              }
+            ]
+          }
+        ]
       },
       "chat.postMessage"
     );
@@ -77,8 +211,27 @@ app.route("/ping").get(async (req, res) => {
   }
   res.status(200).send("Pong");
 });
-app.route("/userStatus").post((req, res) => {
-  console.log(req.body);
+
+app.route("/userStatus").post(async (req, res) => {
+  const payload = JSON.parse(req.body.payload);
+  const userId = payload.user.id;
+  const fileName = userId + ".txt";
+  fs.appendFile(
+    fileName,
+    "\n" +
+      payload.actions[0].value +
+      ", " +
+      new Date().getDay() +
+      ", " +
+      new Date().getHours(),
+    // { flag: "wx" },
+    function(err) {
+      if (err) throw err;
+      console.log("It's saved!");
+    }
+  );
+
+  // Stocker dans une db, envoyer le questionnaire toute les heures
   res.status(200).send("Pong");
 });
 
