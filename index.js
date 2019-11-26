@@ -204,6 +204,14 @@ app.route("/ping").get(async (req, res) => {
                 type: "button",
                 text: {
                   type: "plain_text",
+                  text: "Je suis en auto"
+                },
+                value: "car"
+              },
+              {
+                type: "button",
+                text: {
+                  type: "plain_text",
                   text: "Je fais autre choses"
                 },
                 value: "other"
