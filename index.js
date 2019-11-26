@@ -64,7 +64,7 @@ app.use((req, res, next) => {
 app.disable("x-powered-by");
 
 new CronJob(
-  "0 */20 * * * *",
+  "0 */60 * * * *",
   async function() {
     try {
       if (!(new Date().getHours() >= 8 && new Date().getHours() <= 18)) {
@@ -194,6 +194,14 @@ app.route("/ping").get(async (req, res) => {
                 type: "button",
                 text: {
                   type: "plain_text",
+                  text: "Je mange"
+                },
+                value: "eat"
+              },
+              {
+                type: "button",
+                text: {
+                  type: "plain_text",
                   text: "Je fais autre choses"
                 },
                 value: "other"
@@ -223,7 +231,9 @@ app.route("/userStatus").post(async (req, res) => {
       ", " +
       new Date().getDay() +
       ", " +
-      new Date().getHours(),
+      new Date().getHours() +
+      ":" +
+      new Date().getMinutes(),
     // { flag: "wx" },
     function(err) {
       if (err) throw err;
