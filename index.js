@@ -64,7 +64,7 @@ app.use((req, res, next) => {
 app.disable("x-powered-by");
 
 new CronJob(
-  "0 */60 * * * *",
+  "0 */20 * * * *",
   async function() {
     try {
       if (
