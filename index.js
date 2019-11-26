@@ -67,7 +67,9 @@ new CronJob(
   "0 */60 * * * *",
   async function() {
     try {
-      if (!(new Date().getHours() >= 8 && new Date().getHours() <= 18)) {
+      if (
+        !(new Date().getHours() >= 8 + 5 && new Date().getHours() <= 18 + 5)
+      ) {
         return;
       }
 
@@ -231,7 +233,7 @@ app.route("/userStatus").post(async (req, res) => {
       ", " +
       new Date().getDay() +
       ", " +
-      new Date().getHours() +
+      (new Date().getHours() - 5) +
       ":" +
       new Date().getMinutes(),
     // { flag: "wx" },
