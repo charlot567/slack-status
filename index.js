@@ -68,8 +68,12 @@ new CronJob(
   async function() {
     try {
       if (
-        !(new Date().getHours() >= 8 + 5 && new Date().getHours() <= 18 + 5)
+        !(new Date().getHours() >= 8 + 5 && new Date().getHours() <= 16 + 5)
       ) {
+        return;
+      }
+      
+      if(new Date().getDay() === 6 || new Date().getDay() === 7) {
         return;
       }
 
